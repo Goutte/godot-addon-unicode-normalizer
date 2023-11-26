@@ -1,0 +1,7 @@
+# Source file for decomposition data
+# https://www.unicode.org/Public/UNIDATA/UnicodeData.txt
+UnicodeData.txt 
+
+# Source file for substitution data
+# https://raw.githubusercontent.com/unicode-org/cldr-json/main/cldr-json/cldr-core/supplemental/characterFallbacks.json
+characterFallbacks.json
