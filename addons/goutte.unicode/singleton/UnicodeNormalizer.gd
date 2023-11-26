@@ -1,6 +1,6 @@
 # SPDX-FileContributor: Antoine Goutenoir (antoine@goutenoir.com)
 # SPDX-License-Identifier: MIT
-@tool  # mostly because our test-suite is a EditorScript
+@tool
 extends Node
 class_name UnicodeNormalizerClass
 

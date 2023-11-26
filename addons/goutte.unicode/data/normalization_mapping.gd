@@ -1,6 +1,6 @@
 # SPDX-FileContributor: Antoine Goutenoir (antoine@goutenoir.com)
 # SPDX-License-Identifier: MIT
-@tool  # mostly because our test-suite is a EditorScript
+@tool
 extends Resource
 class_name NormalizationMapping
 
@@ -74,7 +74,7 @@ func get_decomposition(character_code: int) -> String:
 	var index := self.decomposables.bsearch(character_code, true)
 	
 	if (
-		not self.decomposables.is_empty()
+		index < self.decomposables.size()
 		and
 		self.decomposables[index] == character_code
 	):
@@ -87,13 +87,56 @@ func get_substitution(character_code: int) -> String:
 	var index := self.substitutables.bsearch(character_code, true)
 	
 	if (
-		not self.substitutables.is_empty()
+		index < self.substitutables.size()
 		and
 		self.substitutables[index] == character_code
 	):
 		return self.substitutions[index]
 	
 	return String.chr(character_code)
+
+
+#  _    _           _       _
+# | |  | |         | |     | |
+# | |  | |_ __   __| | __ _| |_ ___
+# | |  | | '_ \ / _` |/ _` | __/ _ \
+# | |__| | |_) | (_| | (_| | ||  __/
+#  \____/| .__/ \__,_|\__,_|\__\___|
+#        | |
+#        |_|
+# Tools to add/remove pairs from the database.
+# As they keep the mappings sorted, best use these methods instead of appending.
+# You should only use this if you want to customize the default mappings.
+# I personnaly use this to add stuff like '…' → '...'.
+# Note that your changes won't be saved to file.  Use ResourceSaver.save().
+
+func insert_decomposable(decomposable: int, decomposition: int):
+	var index := self.decomposables.bsearch(decomposable, true)
+	self.decomposables.insert(index, decomposable)
+	self.decompositions.insert(index, decomposition)
+
+func insert_substitutable(substitutable: int, substitution: String):
+	var index := self.substitutables.bsearch(substitutable, true)
+	self.substitutables.insert(index, substitutable)
+	self.substitutions.insert(index, substitution)
+
+func delete_decomposable(decomposable: int):
+	var index := self.decomposables.bsearch(decomposable, true)
+	if (
+		index < self.decomposables.size()
+		and
+		self.decomposables[index] == decomposable
+	):
+		self.decomposables.remove_at(index)
+
+func delete_substitutable(substitutable: int):
+	var index := self.substitutables.bsearch(substitutable, true)
+	if (
+		index < self.substitutables.size()
+		and
+		self.substitutables[index] == substitutable
+	):
+		self.substitutables.remove_at(index)
 
 
 #  _____                                      _
@@ -130,6 +173,8 @@ static func from_sources() -> NormalizationMapping:
 			continue  # last line of the file is empty, and yields line == [""]
 		if line[5] == "":
 			continue  # Let's only keep lines with decomposition data
+		if not line[0].is_valid_hex_number():
+			continue  # should not happen unless our database gets corrupted
 		# Let's keep only the first character of the decomposition.
 		# (naive but kind of works)  Decomposition can be stuff like:
 		# - 0113 0300
@@ -140,9 +185,7 @@ static func from_sources() -> NormalizationMapping:
 				continue
 			# All's OK, let's store the pair
 			var code := line[0].hex_to_int()
-			var index := mapping.decomposables.bsearch(code, true)
-			mapping.decomposables.insert(index, code)
-			mapping.decompositions.insert(index, something.hex_to_int())
+			mapping.insert_decomposable(code, something.hex_to_int())
 			break
 	
 	unicode_data.close()
@@ -160,9 +203,7 @@ static func from_sources() -> NormalizationMapping:
 		if not hex.is_valid_hex_number():
 			continue
 		var code := hex.hex_to_int()
-		var index := mapping.substitutables.bsearch(code, true)
-		mapping.substitutables.insert(index, code)
-		mapping.substitutions.insert(index, fbd[key][0]['substitute'])
+		mapping.insert_substitutable(code, fbd[key][0]['substitute'])
 	
 	substitution_data.close()
 	
