@@ -43,7 +43,7 @@ Here, the font supports some french diacritics, but only uppercase characters:
 
 ```gdscript
 # file "MyFontNormalizer.gd"
-extends UnicodeNormalizerClass
+extends UnicodedNormalizerNode
 
 var characters_in_my_font := "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ÉÈÊËÀÂÄÔÖÙÛÜÇ"
 

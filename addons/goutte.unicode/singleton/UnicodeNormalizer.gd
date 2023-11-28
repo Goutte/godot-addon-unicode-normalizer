@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 @tool
 extends Node
-class_name UnicodeNormalizerClass
+class_name UnicodeNormalizerNode
 
 #  _    _       _               _        _   _                            _ _
 # | |  | |     (_)             | |      | \ | |                          | (_)

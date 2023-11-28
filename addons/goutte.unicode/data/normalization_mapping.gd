@@ -120,7 +120,7 @@ func insert_substitutable(substitutable: int, substitution: String):
 	self.substitutables.insert(index, substitutable)
 	self.substitutions.insert(index, substitution)
 
-func delete_decomposable(decomposable: int):
+func remove_decomposable(decomposable: int):
 	var index := self.decomposables.bsearch(decomposable, true)
 	if (
 		index < self.decomposables.size()
@@ -129,7 +129,7 @@ func delete_decomposable(decomposable: int):
 	):
 		self.decomposables.remove_at(index)
 
-func delete_substitutable(substitutable: int):
+func remove_substitutable(substitutable: int):
 	var index := self.substitutables.bsearch(substitutable, true)
 	if (
 		index < self.substitutables.size()

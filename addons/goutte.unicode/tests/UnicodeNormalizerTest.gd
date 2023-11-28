@@ -11,7 +11,7 @@ extends EditorScript
 
 
 var status := OK
-var normalizer: UnicodeNormalizerClass
+var normalizer: UnicodedNormalizerNode
 
 
 func _run():
@@ -44,7 +44,7 @@ func run(n_times: int):
 		run_once()
 
 
-func get_normalizer() -> UnicodeNormalizerClass:
+func get_normalizer() -> UnicodedNormalizerNode:
 	return preload("res://addons/goutte.unicode/singleton/UnicodeNormalizer.gd").new()
 
 
